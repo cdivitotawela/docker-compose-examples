@@ -1,0 +1,10 @@
+# This example show how a command runs in a loop with embedded command
+version: '3'
+
+services:
+  alpine:
+    image: alpine
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "while [ 1 ]; do echo log message at `date '+%s'`; sleep 5; done"
