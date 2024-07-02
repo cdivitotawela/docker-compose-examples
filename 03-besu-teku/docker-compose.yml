@@ -5,6 +5,7 @@ services:
     environment:
       - JWT_SECRET_FILE=/config/jwtsecret.hex
       - BESU_CONFIG_FILE=/config/besu.toml
+      - SET_PUBLIC_IP="true"
     volumes:
       - CONFIG:/config:rw
 
