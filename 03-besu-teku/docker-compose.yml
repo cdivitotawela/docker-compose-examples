@@ -1,0 +1,62 @@
+services:
+  init:
+    container_name: init
+    build: .
+    environment:
+      - JWT_SECRET_FILE=/config/jwtsecret.hex
+      - BESU_CONFIG_FILE=/config/besu.toml
+    volumes:
+      - CONFIG:/config:rw
+
+#      --config-file=/config/besu.toml
+      # --p2p-host=116.255.44.10
+  besu:
+    image: hyperledger/besu:latest
+    container_name: besu
+    restart: always
+    command: >
+      --sync-mode=X_SNAP
+      --data-storage-format=BONSAI
+      --data-path=/data
+      --network=HOLESKY
+      --rpc-http-enabled
+      --rpc-http-api=ETH,NET,WEB3,ENGINE,ADMIN
+      --host-whitelist="*"
+      --rpc-http-cors-origins="*"
+      --engine-rpc-enabled
+      --engine-host-allowlist="*"
+      --engine-jwt-secret=/config/jwtsecret.hex
+    ports:
+      - 8545:8545
+      - 8551:8551
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    volumes:
+      - CONFIG:/config:r
+      - $PWD/besu-data:/data
+
+  teku:
+    image: consensys/teku:latest
+    container_name: teku
+    restart: always
+    command: >
+      --network=HOLESKY
+      --ee-endpoint=http://besu:8551
+      --ee-jwt-secret-file=/config/jwtsecret.hex
+      --metrics-enabled=true
+      --rest-api-enabled=true
+      --initial-state="https://checkpoint-sync.holesky.ethpandaops.io"
+      --data-base-path=/data
+    environment:
+      - JAVA_OPTS="-Xmx4g" 
+    volumes:
+      - CONFIG:/config:r
+      - $PWD/teku-data:/data
+    ports:
+      - 5051:5051
+      - 5052:5052
+
+volumes:
+  CONFIG:
+
