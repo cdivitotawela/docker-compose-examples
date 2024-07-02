@@ -8,8 +8,6 @@ services:
     volumes:
       - CONFIG:/config:rw
 
-#      --config-file=/config/besu.toml
-      # --p2p-host=116.255.44.10
   besu:
     image: hyperledger/besu:latest
     container_name: besu
@@ -26,6 +24,7 @@ services:
       --engine-rpc-enabled
       --engine-host-allowlist="*"
       --engine-jwt-secret=/config/jwtsecret.hex
+      --config-file=/config/besu.toml
     ports:
       - 8545:8545
       - 8551:8551

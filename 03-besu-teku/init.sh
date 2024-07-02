@@ -19,4 +19,4 @@ test -s $JWT_SECRET_FILE || openssl rand -hex 32 | tr -d "\n" > $JWT_SECRET_FILE
 PUBLIC_IP=$(curl https://ifconfig.me)
 log_info "Public IP $PUBLIC_IP"
 test -n $PUBLIC_IP || log_error "Public ip is empty"
-echo "p2p-host=$PUBLIC_IP" > $BESU_CONFIG_FILE
+echo "p2p-host=\"$PUBLIC_IP\"" > $BESU_CONFIG_FILE
